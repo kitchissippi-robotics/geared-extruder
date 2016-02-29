@@ -45,14 +45,11 @@ module Draw_Extruder_Body_Hardware() {
 		translate([hwMountHole_Spacing/ 2, 0, -3])
 		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 
-		translate([-hwMountHole_Spacing/ 2, 0, -3])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
+		translate([-hwMountHole_Spacing/ 2, 0, -5])
+		Draw_hwBolt(hwM3_Bolt_AllenHead, 10);
 
-		translate([0, hwMountHole_Spacing/ 2, -3])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
-
-		*translate([0, -hwMountHole_Spacing/ 2, -3])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
+		translate([0, hwMountHole_Spacing/ 2, -5])
+		Draw_hwBolt(hwM3_Bolt_AllenHead, 10);
 	}
 
 	// bolt for idler spring
