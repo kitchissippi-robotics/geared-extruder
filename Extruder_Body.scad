@@ -36,7 +36,7 @@ module Draw_Extruder_Body_Hardware() {
 	rotate([0,180,0])
 	%Vitamin_DrawMotor();
 
-	rotate([0,0,45]){
+	rotate([0,0,45 + hwPos_MotorRotation]){
 	translate([hwMountHole_Spacing/ 2, 0, -3])
 	Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 
@@ -46,7 +46,7 @@ module Draw_Extruder_Body_Hardware() {
 	translate([0, hwMountHole_Spacing/ 2, -3])
 	Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 
-	translate([0, -hwMountHole_Spacing/ 2, -3])
+	*translate([0, -hwMountHole_Spacing/ 2, -3])
 	Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 	}
 
@@ -56,10 +56,16 @@ module Draw_Extruder_Body_Hardware() {
 	translate([0,0,hwPos_HobOffset])
 	%Vitamin_DrawHob();
 
+	// filament
 	translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 	rotate([90,90,0])
 	%cylinder(h = 200, d = 1.75);
 
+
+	color("Gold")
+	%translate([hwHob_Diameter/2,hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+	rotate([-90,90,0])
+	import("pushfit.stl", convexity=3);
 }
 
 module Vitamin_DrawHob() {
