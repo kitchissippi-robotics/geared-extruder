@@ -33,7 +33,7 @@ module Part_Extruder_Body() {
 }
 
 module Draw_Extruder_Body_Hardware() {
-	rotate([0,180,0])
+	rotate([0,180,hwPos_MotorRotation])
 	%Vitamin_DrawMotor();
 
 	rotate([0,0,45 + hwPos_MotorRotation]){
@@ -49,6 +49,12 @@ module Draw_Extruder_Body_Hardware() {
 	*translate([0, -hwMountHole_Spacing/ 2, -3])
 	Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 	}
+
+
+
+	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2 + 16])
+	rotate([0,180,0])
+		Draw_hwBolt(hwM4_Bolt_HexHead, 20);
 
 	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2])
 		%Vitamin_DrawBearing();
