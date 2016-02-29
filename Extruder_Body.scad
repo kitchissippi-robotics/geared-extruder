@@ -50,11 +50,15 @@ module Draw_Extruder_Body_Hardware() {
 	Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 	}
 
-	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwShaft_Length- hw608Thickness/2 - hwHob_Inset])
+	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2])
 		%Vitamin_DrawBearing();
 
-	translate([0,0,hwShaft_Length - hwHob_Length])
+	translate([0,0,hwPos_HobOffset])
 	%Vitamin_DrawHob();
+
+	translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+	rotate([90,90,0])
+	%cylinder(h = 200, d = 1.75);
 
 }
 

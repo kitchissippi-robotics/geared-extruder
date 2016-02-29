@@ -20,7 +20,7 @@ hwGearBox_HubDiameter = 21.5;
 hwGearBox_HubDepth = 2;
 
 hwShaft_Diameter = 8;
-hwShaft_Length = 20;
+hwShaft_Length = 21;
 
 hwMotor_BodyWidth = 42;
 hwMotor_BodyDepth = 44;
@@ -33,3 +33,5 @@ hw608HubDiameter = 12;
 hwHob_Diameter = 13;
 hwHob_Length = 13;
 hwHob_Inset = 4;
+
+hwPos_HobOffset = hwGearBox_HubDepth + 1;
