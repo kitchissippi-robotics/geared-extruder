@@ -31,6 +31,42 @@ if (undef == MultiPartMode) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 module Part_Extruder_Body() {
+	difference() {
+		// draw body
+		union() {
+			cylinder(h = 5, d = 40, $fn = gcFacetLarge);
+		}
+
+		// carve outs
+
+		// filament shape
+		translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		rotate([90,90,0])
+		cylinder(h = 200, d = HW_Hole(2), $fn = gcFacetSmall);
+
+		// hob
+		translate([0,0,-0.1])
+		cylinder(h = 40, d = hwHob_Diameter + 1);
+
+		// motor raised hub
+		translate([0,0,-0.1])
+		cylinder(h = hwGearBox_HubDepth + 1, d = hwGearBox_HubDiameter + 0.5);
+		translate([0,0,hwGearBox_HubDepth + 0.8])
+		cylinder(h = 2.3, d1 = hwGearBox_HubDiameter + 0.5, d2 = hwGearBox_HubDiameter -1);
+
+		// motor mount bolts
+		rotate([0,0,45 + hwPos_MotorRotation]){
+			translate([hwMountHole_Spacing/ 2, 0, -3])
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 20);
+
+			translate([-hwMountHole_Spacing/ 2, 0, -5])
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 10);
+
+			translate([0, hwMountHole_Spacing/ 2, -5])
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 10);
+		}
+
+	}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
