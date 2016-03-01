@@ -24,9 +24,33 @@ if (undef == MultiPartMode) {
 
 
 	Part_Extruder_Body();
+
+	// Move these two modules to other files once completed
+	Part_Extruder_Base();
+	Part_Extruder_Idler();
+
 	Draw_Extruder_Body_Hardware();
 } else {
 	EnableSupport = false;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+module Part_Extruder_Base() {
+	difference() {
+		union() {
+			hull() {
+				translate([0,0,2])
+				cylinder(h = 3, d = 37, $fn = gcFacetLarge);
+
+				cylinder(h = 2, d = 36, $fn = gcFacetLarge);
+			}
+		}
+
+		CarveOutHardware();
+	}
+}
+// ---------------------------------------------------------------------------------------------------------------------
+module Part_Extruder_Idler() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -46,96 +70,105 @@ module Part_Extruder_Body() {
 				translate([0,0,0])
 				cylinder(h = 2, d = 36, $fn = gcFacetLarge);
 				}
-				
+
 				translate([0,-20,-0.1])
 					cube([40, 40, 5.2]);
-					
+
 				translate([-20,0,-0.1])
 					cube([40, 40, 5.2]);
 			}
-			
+
 			//hull() {
 				// top section
 				*translate([-idlerOutsideEdge, 12, 0])
 				cylinder(h = 5, d =3, $fn = gcFacetSmall);
-				
+
 				*translate([0, 12, 0])
 				cylinder(h = 5, d =3, $fn = gcFacetSmall);
-				
+
 				*translate([0, 20, 0])
 				cylinder(h = 5, d =3, $fn = gcFacetSmall);
-			
+
 				// idler bolt mount
-				
-			
+
+
 				translate([idlerOutsideEdge -1, -12, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
 				translate([idlerOutsideEdge -1, -12, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
-				
+
 				translate([-2, -20, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
 				translate([-2, -20, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
-		
-			
+
+
 				translate([idlerOutsideEdge, -20, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
 				translate([idlerOutsideEdge, -20, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
-			
+
 				// idler bolt mount top
 				translate([idlerOutsideEdge, -20, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
-			
+
 				translate([idlerOutsideEdge -1, -12, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
-			
+
 				translate([-2, -20, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
-			
+
 				translate([-2, -12, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
-				
+
 				// base rear
 				rotate([0,0,hwPos_MotorRotation - 45])
 				translate([-hwMountHole_Spacing/ 2, 0, 7])
 				scale([1,1,0.5])
 				sphere(d = 10, $fn = gcFacetSmall);
-				
-				#rotate([0,0,hwPos_MotorRotation - 45])
+
+				rotate([0,0,hwPos_MotorRotation - 45])
 				translate([-hwMountHole_Spacing/ 2, 0, 2])
 				cylinder(h = 3, d = 11, $fn = gcFacetSmall);
-				#rotate([0,0,hwPos_MotorRotation - 45])
+				rotate([0,0,hwPos_MotorRotation - 45])
 				translate([-hwMountHole_Spacing/ 2, 0, 0])
 				cylinder(h = 2, d = 10, $fn = gcFacetSmall);
-				
+
 				// filament path
 				translate([6, -7, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
 				translate([6, -7, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
-				
+
 				translate([6, -7, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
 			}
-		}
 
-		// carve outs
+
+		}
+	CarveOutHardware();
+		translate([-50,-50,0])
+			cube([100, 100, 5]);
+	}
+}
+
+module CarveOutHardware() {
+	union() {
+				// carve outs
 
 		// filament shape
 		translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 200, d = HW_Hole(2), $fn = gcFacetSmall);
-		
+
 		translate([hwHob_Diameter/2, -21, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 1, d1 = HW_Hole(4), d2 = HW_Hole(8), $fn = gcFacetSmall);
 		translate([hwHob_Diameter/2, -18.1, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 3, d1 = HW_Hole(2), d2 = HW_Hole(4), $fn = gcFacetSmall);
-		
-		#translate([hwHob_Diameter/2, -11.1, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+
+		translate([hwHob_Diameter/2, -11.1, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 3, d1 = HW_Hole(2), d2 = HW_Hole(4), $fn = gcFacetSmall);
 
@@ -159,33 +192,34 @@ module Part_Extruder_Body() {
 
 			translate([0, hwMountHole_Spacing/ 2, -5])
 			Carve_hwBolt(hwM3_Bolt_AllenHead, 10, 50);
-			
+
 
 		}
-		
+
 		// top mount
 		*hull() {
 			rotate([0,0,45 + hwPos_MotorRotation])
 			translate([hwMountHole_Spacing/ 2, 0, 5])
 				cylinder(h = 40, d = 10);
-			
+
 			translate([0, 0, 5])
 				cylinder(h = 40, d = 10);
-				
+
 			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 5])
 				cylinder(h = 40, d = hw608OutsideDiameter + 2);
 		}
-		
+
 		// bolt for idler spring
 		translate([36, -16, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([0,-90,0])
 			Carve_hwBolt(hwM3_Bolt_AllenHead, 25, 50);
-			
+
 		// idler bearing
 		translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 7])
 			cylinder(h = hw608Thickness + 20, d = hw608OutsideDiameter + 2);
 
 	}
+
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
