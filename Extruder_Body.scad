@@ -23,10 +23,14 @@ if (undef == MultiPartMode) {
 	EnableSupport = true;
 
 
+	color("gray")
 	Part_Extruder_Body();
 
 	// Move these two modules to other files once completed
+	color("orange")
 	Part_Extruder_Base();
+
+	translate([0,0, rpBaseThickness])
 	Part_Extruder_Idler();
 
 	Draw_Extruder_Body_Hardware();
@@ -67,6 +71,22 @@ module Part_Extruder_Base() {
 }
 // ---------------------------------------------------------------------------------------------------------------------
 module Part_Extruder_Idler() {
+	difference() {
+		union() {
+			rotate([0,0,45 + hwPos_MotorRotation])
+			translate([hwMountHole_Spacing/ 2, 0, 0])
+				cylinder(h = 10, d = 10, $fn = gcFacetSmall);
+
+			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 0])
+			cylinder(h = 10, d = hw608InsideDiameter - 0.5, $fn = gcFacetSmall);
+
+			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 0])
+			cylinder(h = 5.5, d = hw608HubDiameter, $fn = gcFacetSmall);
+		}
+
+		translate([0,0,-rpBaseThickness])
+			CarveOutHardware(true);
+	}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -170,7 +190,7 @@ module Part_Extruder_Body() {
 	}
 }
 
-module CarveOutHardware() {
+module CarveOutHardware(isIdler = false) {
 	union() {
 				// carve outs
 
@@ -197,13 +217,13 @@ module CarveOutHardware() {
 
 		// hob
 		translate([0,0,-0.1])
-		cylinder(h = 40, d = hwHob_Diameter + 1);
+		cylinder(h = 40, d = hwHob_Diameter + 2, $fn = gcFacetMedium);
 
 		// motor raised hub
 		translate([0,0,-0.1])
-		cylinder(h = hwGearBox_HubDepth + 1, d = hwGearBox_HubDiameter + 0.5);
+		cylinder(h = hwGearBox_HubDepth + 1, d = hwGearBox_HubDiameter + 0.5, $fn = gcFacetLarge);
 		translate([0,0,hwGearBox_HubDepth + 0.8])
-		cylinder(h = 2.3, d1 = hwGearBox_HubDiameter + 0.5, d2 = hwGearBox_HubDiameter -1);
+		cylinder(h = 2.3, d1 = hwGearBox_HubDiameter + 0.5, d2 = hwGearBox_HubDiameter -1, $fn = gcFacetLarge);
 
 		// motor mount bolts
 		rotate([0,0,45 + hwPos_MotorRotation]){
@@ -226,20 +246,22 @@ module CarveOutHardware() {
 				cylinder(h = 40, d = 10);
 
 			translate([0, 0, 5])
-				cylinder(h = 40, d = 10);
+				cylinder(h = 40, d = 10, $fn = gcFacetMedium);
 
 			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 5])
-				cylinder(h = 40, d = hw608OutsideDiameter + 2);
+				cylinder(h = 40, d = hw608OutsideDiameter + 2, $fn = gcFacetMedium);
 		}
 
 		// bolt for idler spring
+		if (false == isIdler) {
 		translate([36, -16, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([0,-90,0])
 			Carve_hwBolt(hwM3_Bolt_AllenHead, 25, 50);
 
 		// idler bearing
 		translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 7])
-			cylinder(h = hw608Thickness + 20, d = hw608OutsideDiameter + 2);
+			cylinder(h = hw608Thickness + 20, d = hw608OutsideDiameter + 2, $fn = gcFacetMedium);
+		}
 
 		// pushfit connector
 		translate([hwHob_Diameter/2,-hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
@@ -282,20 +304,23 @@ module Draw_Extruder_Body_Hardware() {
 		Draw_hwBolt(hwM4_Bolt_HexHead, 20);
 
 	// idler bearing
+	color("Silver")
 	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2])
 		%Vitamin_DrawBearing();
 
 	// hobbed pulley
+	color("Gold")
 	translate([0,0,hwPos_HobOffset])
 	%Vitamin_DrawHob();
 
 	// filament shape
+	color("Blue")
 	translate([hwHob_Diameter/2 - 1.75/3, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 	rotate([90,90,0])
 	%cylinder(h = 200, d = 1.75, $fn = gcFacetSmall);
 
 	// pushfit connector shape
-	//color("Gold")
+	color("Gold")
 	%translate([hwHob_Diameter/2,-hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 	rotate([90,90,0])
 	import("pushfit.stl", convexity=3);
