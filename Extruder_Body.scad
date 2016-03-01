@@ -31,10 +31,68 @@ if (undef == MultiPartMode) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 module Part_Extruder_Body() {
+	idlerOutsideEdge = 12;
+
 	difference() {
 		// draw body
 		union() {
+			*hull () {
 			cylinder(h = 5, d = 40, $fn = gcFacetLarge);
+			}
+			
+			hull() {
+				// top section
+				translate([-idlerOutsideEdge, 12, 0])
+				cylinder(h = 5, d =3, $fn = gcFacetSmall);
+				
+				translate([idlerOutsideEdge, 12, 0])
+				cylinder(h = 5, d =3, $fn = gcFacetSmall);
+				
+				translate([0, 20, 0])
+				cylinder(h = 5, d =3, $fn = gcFacetSmall);
+			
+				// idler bolt mount
+				translate([idlerOutsideEdge, -20, 0])
+				cylinder(h = 1, d =3, $fn = gcFacetSmall);
+			
+				translate([idlerOutsideEdge, -12, 0])
+				cylinder(h = 1, d =3, $fn = gcFacetSmall);
+			
+				translate([-idlerOutsideEdge, -20, 0])
+				cylinder(h = 1, d =3, $fn = gcFacetSmall);
+			
+				translate([-idlerOutsideEdge, -12, 0])
+				cylinder(h = 1, d =3, $fn = gcFacetSmall);
+			
+				// idler bolt mount top
+				translate([idlerOutsideEdge, -20, 16])
+				sphere(d =3, $fn = gcFacetSmall);
+			
+				translate([idlerOutsideEdge, -12, 16])
+				sphere(d =3, $fn = gcFacetSmall);
+			
+				translate([-idlerOutsideEdge, -20, 16])
+				sphere(d =3, $fn = gcFacetSmall);
+			
+				translate([-idlerOutsideEdge, -12, 16])
+				sphere(d =3, $fn = gcFacetSmall);
+				
+				// base rear
+				rotate([0,0,hwPos_MotorRotation - 45])
+				translate([-hwMountHole_Spacing/ 2, 0, 13])
+				sphere(d = 10, $fn = gcFacetSmall);
+				
+				rotate([0,0,hwPos_MotorRotation - 45])
+				translate([-hwMountHole_Spacing/ 2, 0, 0])
+				cylinder(h = 1, d = 10, $fn = gcFacetSmall);
+				
+				// filament path
+				#translate([3, -3, 0])
+				cylinder(h = 1, d =3, $fn = gcFacetSmall);
+				
+				translate([3, -3, 16])
+				sphere(d =3, $fn = gcFacetSmall);
+			}
 		}
 
 		// carve outs
@@ -56,15 +114,39 @@ module Part_Extruder_Body() {
 
 		// motor mount bolts
 		rotate([0,0,45 + hwPos_MotorRotation]){
-			translate([hwMountHole_Spacing/ 2, 0, -3])
-			Carve_hwBolt(hwM3_Bolt_AllenHead, 20);
+			translate([hwMountHole_Spacing/ 2, 0, -5])
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 20, 50);
 
 			translate([-hwMountHole_Spacing/ 2, 0, -5])
-			Carve_hwBolt(hwM3_Bolt_AllenHead, 10);
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 20, 50);
 
 			translate([0, hwMountHole_Spacing/ 2, -5])
-			Carve_hwBolt(hwM3_Bolt_AllenHead, 10);
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 20, 50);
+			
+
 		}
+		
+		// top mount
+		hull() {
+			rotate([0,0,45 + hwPos_MotorRotation])
+			translate([hwMountHole_Spacing/ 2, 0, 5])
+				cylinder(h = 40, d = 10);
+			
+			translate([0, 0, 5])
+				cylinder(h = 40, d = 10);
+				
+			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 5])
+				cylinder(h = 40, d = hw608OutsideDiameter);
+		}
+		
+		// bolt for idler spring
+		translate([36, -16, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		rotate([0,-90,0])
+			Carve_hwBolt(hwM3_Bolt_AllenHead, 25, 50);
+			
+		// idler bearing
+		translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2 -1])
+			cylinder(h = hw608Thickness + 2, d = hw608OutsideDiameter + 2);
 
 	}
 }
@@ -78,23 +160,23 @@ module Draw_Extruder_Body_Hardware() {
 
 	// motor mount bolts
 	rotate([0,0,45 + hwPos_MotorRotation]){
-		translate([hwMountHole_Spacing/ 2, 0, -3])
+		translate([hwMountHole_Spacing/ 2, 0, -5])
 		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 
 		translate([-hwMountHole_Spacing/ 2, 0, -5])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 10);
+		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 
 		translate([0, hwMountHole_Spacing/ 2, -5])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 10);
+		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
 	}
 
 	// bolt for idler spring
-	translate([32, -15, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
-	rotate([5,-90,0])
-		Draw_hwBolt(hwM3_Bolt_AllenHead, 20);
+	translate([36, -16, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+	rotate([0,-90,0])
+		Draw_hwBolt(hwM3_Bolt_AllenHead, 25);
 
 	// bolt for idler shaft
-	translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2 + 16])
+	*translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, hwPos_HobOffset + hwHob_Length - hwHob_Inset - hw608Thickness/2 + 16])
 	rotate([0,180,0])
 		Draw_hwBolt(hwM4_Bolt_HexHead, 20);
 
