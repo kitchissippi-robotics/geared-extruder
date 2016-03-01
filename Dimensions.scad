@@ -34,7 +34,7 @@ hwHob_Diameter = 13;
 hwHob_Length = 13;
 hwHob_Inset = 4;
 
-hwPushFit_ThreadDiameter = 9.2;
+hwPushFit_ThreadDiameter = 9.1;	// will be cut out a bit when threads are tapped
 hwPushFit_ThreadDepth = 5.5;
 
 hwPos_HobOffset = hwGearBox_HubDepth + 1;
