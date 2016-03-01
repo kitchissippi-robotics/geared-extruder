@@ -39,4 +39,6 @@ hwPushFit_ThreadDepth = 5.5;
 
 hwPos_HobOffset = hwGearBox_HubDepth + 1;
 hwPos_MotorRotation = 55;
-hwPos_PushFitOffset = hwGearBox_Diameter/2 - 5;
+hwPos_PushFitOffset = hwGearBox_Diameter/2 + 4;
+
+rpBaseThickness = 3;

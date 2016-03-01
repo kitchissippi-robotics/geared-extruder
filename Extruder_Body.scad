@@ -36,17 +36,33 @@ if (undef == MultiPartMode) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 module Part_Extruder_Base() {
+	baseCurve = 5;
+	baseOffset = 10;
 	difference() {
 		union() {
 			hull() {
 				translate([0,0,2])
-				cylinder(h = 3, d = 37, $fn = gcFacetLarge);
+				cylinder(h = rpBaseThickness -2, d = 37, $fn = gcFacetLarge);
 
-				cylinder(h = 2, d = 36, $fn = gcFacetLarge);
+				cylinder(h = rpBaseThickness, d = 36, $fn = gcFacetLarge);
+
+				translate([-36/2 + baseCurve/2 - baseOffset,-36/2 + baseCurve/2,0])
+					cylinder(h = rpBaseThickness, d = baseCurve, $fn = gcFacetSmall);
+
+				translate([-36/2 + baseCurve/2 - baseOffset, 36/2 - baseCurve/2,0])
+					cylinder(h = rpBaseThickness, d = baseCurve, $fn = gcFacetSmall);
 			}
 		}
 
 		CarveOutHardware();
+
+
+		// mounting holes
+		translate([-36/2 + baseCurve/2 - baseOffset + 3,-36/2 + baseCurve/2 + 3,-0.1])
+					cylinder(h = rpBaseThickness + 0.2, d = HW_Hole(4), $fn = gcFacetSmall);
+
+		translate([-36/2 + baseCurve/2 - baseOffset + 3,36/2 - baseCurve/2 - 3,-0.1])
+					cylinder(h = rpBaseThickness + 0.2, d = HW_Hole(4), $fn = gcFacetSmall);
 	}
 }
 // ---------------------------------------------------------------------------------------------------------------------
@@ -56,6 +72,7 @@ module Part_Extruder_Idler() {
 // ---------------------------------------------------------------------------------------------------------------------
 module Part_Extruder_Body() {
 	idlerOutsideEdge = 14;
+	bodyEdge = 26;
 	bodyWidth = 17;
 
 	difference() {
@@ -71,7 +88,7 @@ module Part_Extruder_Body() {
 				cylinder(h = 2, d = 36, $fn = gcFacetLarge);
 				}
 
-				translate([0,-20,-0.1])
+				translate([0,-bodyEdge,-0.1])
 					cube([40, 40, 5.2]);
 
 				translate([-20,0,-0.1])
@@ -97,25 +114,25 @@ module Part_Extruder_Body() {
 				translate([idlerOutsideEdge -1, -12, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
 
-				translate([-2, -20, 2])
+				translate([-2, -bodyEdge, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
-				translate([-2, -20, 0])
+				translate([-2, -bodyEdge, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
 
 
-				translate([idlerOutsideEdge, -20, 2])
+				translate([idlerOutsideEdge, -bodyEdge, 2])
 				cylinder(h = 3, d =3, $fn = gcFacetSmall);
-				translate([idlerOutsideEdge, -20, 0])
+				translate([idlerOutsideEdge, -bodyEdge, 0])
 				cylinder(h = 2, d =2, $fn = gcFacetSmall);
 
 				// idler bolt mount top
-				translate([idlerOutsideEdge, -20, bodyWidth])
+				translate([idlerOutsideEdge, -bodyEdge, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
 
 				translate([idlerOutsideEdge -1, -12, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
 
-				translate([-2, -20, bodyWidth])
+				translate([-2, -bodyEdge, bodyWidth])
 				sphere(d =3, $fn = gcFacetSmall);
 
 				translate([-2, -12, bodyWidth])
@@ -147,8 +164,9 @@ module Part_Extruder_Body() {
 
 		}
 	CarveOutHardware();
-		translate([-50,-50,0])
-			cube([100, 100, 5]);
+		// cut out base section
+		translate([-50,-50,- 0.1])
+			cube([100, 100, rpBaseThickness + 0.1]);
 	}
 }
 
@@ -157,11 +175,16 @@ module CarveOutHardware() {
 				// carve outs
 
 		// filament shape
-		translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		translate([hwHob_Diameter/2 - 1.75/3, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 200, d = HW_Hole(2), $fn = gcFacetSmall);
 
-		translate([hwHob_Diameter/2, -21, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		// PTFE Tube hole
+		translate([hwHob_Diameter/2 - 1.75/3, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		rotate([90,90,0])
+		cylinder(h = 200, d = HW_Hole(4), $fn = gcFacetSmall);
+
+		/*translate([hwHob_Diameter/2, -21, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
 		cylinder(h = 1, d1 = HW_Hole(4), d2 = HW_Hole(8), $fn = gcFacetSmall);
 		translate([hwHob_Diameter/2, -18.1, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
@@ -170,7 +193,7 @@ module CarveOutHardware() {
 
 		translate([hwHob_Diameter/2, -11.1, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 		rotate([90,90,0])
-		cylinder(h = 3, d1 = HW_Hole(2), d2 = HW_Hole(4), $fn = gcFacetSmall);
+		cylinder(h = 3, d1 = HW_Hole(2), d2 = HW_Hole(4), $fn = gcFacetSmall);*/
 
 		// hob
 		translate([0,0,-0.1])
@@ -218,7 +241,14 @@ module CarveOutHardware() {
 		translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, 7])
 			cylinder(h = hw608Thickness + 20, d = hw608OutsideDiameter + 2);
 
+		// pushfit connector
+		translate([hwHob_Diameter/2,-hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+		rotate([90,90,0])
+		cylinder(h = hwPushFit_ThreadDepth, d = hwPushFit_ThreadDiameter);
+
 	}
+
+
 
 }
 
@@ -260,14 +290,14 @@ module Draw_Extruder_Body_Hardware() {
 	%Vitamin_DrawHob();
 
 	// filament shape
-	translate([hwHob_Diameter/2, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+	translate([hwHob_Diameter/2 - 1.75/3, 100, hwPos_HobOffset + hwHob_Length - hwHob_Inset])
 	rotate([90,90,0])
-	%cylinder(h = 200, d = 1.75);
+	%cylinder(h = 200, d = 1.75, $fn = gcFacetSmall);
 
 	// pushfit connector shape
-	color("Gold")
-	%translate([hwHob_Diameter/2,hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
-	rotate([-90,90,0])
+	//color("Gold")
+	%translate([hwHob_Diameter/2,-hwPos_PushFitOffset,hwPos_HobOffset + hwHob_Length - hwHob_Inset])
+	rotate([90,90,0])
 	import("pushfit.stl", convexity=3);
 }
 
