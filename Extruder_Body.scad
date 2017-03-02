@@ -24,7 +24,7 @@ if (undef == MultiPartMode) {
 
 
 	//color("gray")
-	Part_Extruder_Body();
+	%Part_Extruder_Body();
 
 	// Move these two modules to other files once completed
 	//color("orange")
@@ -34,7 +34,7 @@ if (undef == MultiPartMode) {
 	%translate([0,0, rpBaseThickness])
 	Part_Extruder_Idler();
 
-	%translate([0,0, rpBaseThickness])
+	translate([0,0, rpBaseThickness])
 	Part_Extruder_IdlerOutside();
 
 	%Draw_Extruder_Body_Hardware();
@@ -76,7 +76,7 @@ module Part_Extruder_Base() {
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Lower part of idler arm
+// Upper part of idler arm
 // .....................................................................................................................
 
 module Part_Extruder_IdlerOutside() {
@@ -150,10 +150,10 @@ module Part_Extruder_IdlerOutside() {
 			// hub for bearing
 			hull() {
 			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, topEdge - 3.4])
-			cylinder(h = 3.4, d = hw608HubDiameter, $fn = gcFacetSmall);
+			cylinder(h = 3.4, d = hw608HubDiameter + 8, $fn = gcFacetMedium);
 
 			translate([hwHob_Diameter/2 + hw608OutsideDiameter/2, 0, topEdge - 3])
-			cylinder(h = 2, d = hw608HubDiameter + 2, $fn = gcFacetSmall);
+			cylinder(h = 2, d = hw608HubDiameter + 9, $fn = gcFacetMedium);
 			}
 		}
 		translate([0,0,-rpBaseThickness])
